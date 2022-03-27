@@ -7,7 +7,18 @@ const initialState = {
   time: 0
 };
 
-export default function Stopwatch() {
+function reducer(state, action) {
+  if (!action.type) throw new Error();
+  const states = {
+    start: { ...state, isRunning: true },
+    pause: { ...state, isRunning: false },
+    reset: { isRunning: false, time: 0 },
+    tick: { ...state, time: state.time + 1 }
+  };
+  return states[action.type];
+}
+
+export default function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
   const idRef = useRef(0);
 
@@ -27,20 +38,11 @@ export default function Stopwatch() {
       {state.time}s
       <div>
         <button onClick={() => dispatch({ type: "start" })}>Start</button>
-        <button onClick={() => dispatch({ type: "stop" })}>Stop</button>
+        <button onClick={() => dispatch({ type: "pause" })}>Stop</button>
         <button onClick={() => dispatch({ type: "reset" })}>Reset</button>
       </div>
     </div>
   );
 }
 
-function reducer(state, action) {
-  if (!action.type) throw new Error();
-  const states = {
-    start: { ...state, isRunning: true },
-    stop: { ...state, isRunning: false },
-    reset: { isRunning: false, time: 0 },
-    tick: { ...state, time: state.time + 1 }
-  };
-  return states[action.type];
-}
+
